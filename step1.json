@@ -1,0 +1,346 @@
+[
+    {
+        "id": "e72d8183.2ed18",
+        "type": "tab",
+        "label": "Aarhus City Traffic",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "78a8ba04.0196ec",
+        "type": "tab",
+        "label": "Serve Schema",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "915b487f.672af8",
+        "type": "subflow",
+        "name": "Load Open Data",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "b64b3112.b36308"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 500,
+                "y": 460,
+                "wires": [
+                    {
+                        "id": "70e33e49.35364",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": []
+    },
+    {
+        "id": "30d9b33e.8ffb8c",
+        "type": "Context-Broker",
+        "z": "",
+        "name": "CB",
+        "endpoint": "http://orion-cb:1026",
+        "service": "",
+        "idmEndpoint": ""
+    },
+    {
+        "id": "f7b98a8f.10f51",
+        "type": "inject",
+        "z": "e72d8183.2ed18",
+        "name": "",
+        "topic": "",
+        "payload": "http://portal.opendata.dk",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 130,
+        "y": 40,
+        "wires": [
+            [
+                "e2d4f2f5.50304"
+            ]
+        ]
+    },
+    {
+        "id": "69985ca5.b4f6ec",
+        "type": "http request",
+        "z": "915b487f.672af8",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "url": "",
+        "tls": "",
+        "x": 470,
+        "y": 140,
+        "wires": [
+            [
+                "296d2006.30c2a8"
+            ]
+        ]
+    },
+    {
+        "id": "296d2006.30c2a8",
+        "type": "json",
+        "z": "915b487f.672af8",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 650,
+        "y": 140,
+        "wires": [
+            [
+                "725b5abe.ad2474"
+            ]
+        ]
+    },
+    {
+        "id": "725b5abe.ad2474",
+        "type": "function",
+        "z": "915b487f.672af8",
+        "name": "Loop call data",
+        "func": "\nif (typeof msg.data === 'undefined') {\n    msg.data = msg.payload.result.records;\n} else {\n    msg.data = msg.data.concat(msg.payload.result.records);\n}\n\nif ( msg.payload.result.records.length > 0 ) {\n    msg.url = msg.baseurl + msg.payload.result._links.next;\n    return [msg, null];\n} else {\n    return [null, msg];\n}",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 220,
+        "y": 200,
+        "wires": [
+            [
+                "69985ca5.b4f6ec"
+            ],
+            [
+                "4c27f7a2.df1398"
+            ]
+        ]
+    },
+    {
+        "id": "b64b3112.b36308",
+        "type": "function",
+        "z": "915b487f.672af8",
+        "name": "Setup URL",
+        "func": "msg.baseurl = msg.payload\nmsg.url = \"http://portal.opendata.dk/api/3/action/datastore_search?resource_id=b3eeb0ff-c8a8-4824-99d6-e0a3747c8b0d\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 210,
+        "y": 120,
+        "wires": [
+            [
+                "69985ca5.b4f6ec"
+            ]
+        ]
+    },
+    {
+        "id": "4c27f7a2.df1398",
+        "type": "function",
+        "z": "915b487f.672af8",
+        "name": "Setup URL",
+        "func": "msg.url = \"http://portal.opendata.dk/api/3/action/datastore_search?resource_id=c3097987-c394-4092-ad1d-ad86a81dbf37\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 210,
+        "y": 300,
+        "wires": [
+            [
+                "dba6d439.f3bc08"
+            ]
+        ]
+    },
+    {
+        "id": "dba6d439.f3bc08",
+        "type": "http request",
+        "z": "915b487f.672af8",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "url": "",
+        "x": 450,
+        "y": 300,
+        "wires": [
+            [
+                "fdd89c.b36b2768"
+            ]
+        ]
+    },
+    {
+        "id": "fdd89c.b36b2768",
+        "type": "json",
+        "z": "915b487f.672af8",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 630,
+        "y": 300,
+        "wires": [
+            [
+                "800ecfa.1939d3"
+            ]
+        ]
+    },
+    {
+        "id": "800ecfa.1939d3",
+        "type": "function",
+        "z": "915b487f.672af8",
+        "name": "Loop call Metadata",
+        "func": "\nif (typeof msg.metadata === 'undefined') {\n    msg.metadata = msg.payload.result.records;\n} else {\n    msg.metadata = msg.metadata.concat(msg.payload.result.records);\n}\n\nif ( msg.payload.result.records.length > 0 ) {\n    msg.url = msg.baseurl + msg.payload.result._links.next;\n    return [msg, null];\n} else {\n    return [null, msg];\n}",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 210,
+        "y": 380,
+        "wires": [
+            [
+                "dba6d439.f3bc08"
+            ],
+            [
+                "d0aaa99d.e3cd"
+            ]
+        ]
+    },
+    {
+        "id": "e2d4f2f5.50304",
+        "type": "subflow:915b487f.672af8",
+        "z": "e72d8183.2ed18",
+        "name": "",
+        "env": [],
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "cd8b9d11.26ece"
+            ]
+        ]
+    },
+    {
+        "id": "d0aaa99d.e3cd",
+        "type": "function",
+        "z": "915b487f.672af8",
+        "name": "Combine Data",
+        "func": "var metadatadict = new Map();\nvar datadict = new Map();\n\nvar itemlist = []\n\nconsole.log(msg.metadatadict);\n\nfor (var metaitem of msg.metadata) {\n    metadatadict.set(metaitem._id.toString(), metaitem);\n}\n\nfor (var dataitem of msg.data) {\n    datadict.set(dataitem._id.toString(),dataitem);\n}\n\n\nfor (var metadataitem of msg.metadata) {\n    var item = {}\n    if (datadict.has(metadataitem._id.toString())) {\n        tmpData = datadict.get(metadataitem._id.toString());\n        // console.log(tmpData);\n        item._id = metadataitem._id.toString();\n        item.TIMESTAMP = new Date(tmpData.TIMESTAMP);\n        item.avgSpeed = tmpData.avgSpeed;\n        item.vehicleCount = tmpData.vehicleCount;\n        item.medianMeasuredTime = tmpData.medianMeasuredTime;\n        item.avgMeasuredTime = tmpData.avgMeasuredTime;\n        item.coordinates = [];\n        item.coordinates[0] = [metadataitem.POINT_1_LAT, metadataitem.POINT_1_LNG];\n        item.coordinates[1] = [metadataitem.POINT_2_LAT, metadataitem.POINT_2_LNG];\n        item.status = tmpData.status;\n        itemlist.push(item)\n    }\n}\n\nmsg = {};\nmsg.payload = itemlist;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 220,
+        "y": 460,
+        "wires": [
+            [
+                "70e33e49.35364"
+            ]
+        ]
+    },
+    {
+        "id": "70e33e49.35364",
+        "type": "split",
+        "z": "915b487f.672af8",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": "1",
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 390,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a7a7f5b9.d4118",
+        "type": "http in",
+        "z": "78a8ba04.0196ec",
+        "name": "",
+        "url": "csvtongsi",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 60,
+        "wires": [
+            [
+                "80a1bb58.ca695"
+            ]
+        ]
+    },
+    {
+        "id": "d1769710.b1e318",
+        "type": "http response",
+        "z": "78a8ba04.0196ec",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 450,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "80a1bb58.ca695",
+        "type": "template",
+        "z": "78a8ba04.0196ec",
+        "name": "Transform CSV to JSON",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "javascript",
+        "syntax": "plain",
+        "template": "{\n    \"id\": \"urn:ngsi-ld:TrafficFlowObserved:aarhus:\" & _id,\n    \"type\": \"TrafficFlowObserved\",\n    \"dataProvider\": \"https://www.opendata.dk\",\n    \"laneId\": 1,\n    \"dateObserved\": {\n        \"value\": TIMESTAMP\n    },\n    \"intensity\": {\n        \"value\": vehicleCount\n    },\n    \"averageVehicleSpeed\": {\n        \"value\": avgSpeed\n    },\n    \"location\": {\n        \"type\": \"geo_json\",\n        \"value\": {\n            \"type\": \"LineString\",\n            \"coordinates\": coordinates\n        }\n    }\n}",
+        "output": "str",
+        "x": 390,
+        "y": 60,
+        "wires": [
+            [
+                "e86748c9.e69d78"
+            ]
+        ]
+    },
+    {
+        "id": "e86748c9.e69d78",
+        "type": "change",
+        "z": "78a8ba04.0196ec",
+        "name": "Set content-type",
+        "rules": [
+            {
+                "t": "set",
+                "p": "headers.content-type",
+                "pt": "msg",
+                "to": "text/javascript;charset=UTF-8",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 210,
+        "y": 120,
+        "wires": [
+            [
+                "d1769710.b1e318"
+            ]
+        ]
+    },
+    {
+        "id": "cd8b9d11.26ece",
+        "type": "debug",
+        "z": "e72d8183.2ed18",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 350,
+        "y": 100,
+        "wires": []
+    }
+]

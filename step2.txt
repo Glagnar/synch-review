@@ -1,0 +1,3 @@
+Show output from KeyValues, and after validator.
+Add a Context Broker and open browser at localhost:1026/v2/entities
+

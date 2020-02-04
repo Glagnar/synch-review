@@ -1,0 +1,53 @@
+[
+    {
+        "id": "89fb9d5e.72161",
+        "type": "http request",
+        "z": "e72d8183.2ed18",
+        "name": "Post to Atomic Service",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "",
+        "tls": "",
+        "proxy": "",
+        "authType": "",
+        "x": 560,
+        "y": 220,
+        "wires": [
+            [
+                "fd6ab218.252468"
+            ]
+        ]
+    },
+    {
+        "id": "fd6ab218.252468",
+        "type": "debug",
+        "z": "e72d8183.2ed18",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 510,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "c07db65e.bef33",
+        "type": "function",
+        "z": "e72d8183.2ed18",
+        "name": "Setup URL and Payload",
+        "func": "entity = msg.payload;\n\nmsg.url = \"http://data-manager:6000/notify\";\nmsg.payload = {subscriptionId: \"aarhus\"};\nmsg.payload.data = [entity];\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 570,
+        "y": 160,
+        "wires": [
+            [
+                "89fb9d5e.72161"
+            ]
+        ]
+    }
+]

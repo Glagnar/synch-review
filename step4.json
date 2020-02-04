@@ -1,0 +1,52 @@
+[
+    {
+        "id": "7b9bd1d.8f1083",
+        "type": "function",
+        "z": "e72d8183.2ed18",
+        "name": "Marketplace Credentials",
+        "func": "entity = msg.payload;\n\nmsg.headers = {};\n\nmsg.headers[\"content-type\"] = \"application/json\";\nmsg.headers[\"x-auth-token\"] = \"12c0366cbd0ad836083c5c4aafda26c6fe54a718\";\nmsg.headers[\"Fiware-Service\"] = \"ck62iz3ys000c01lf1pft5hkh\";\n\nmsg.url = \"https://broker.iot-data-marketplace.com/v2/op/update?options=keyValues\";\n\nmsg.payload = {actionType: \"Append\"};\n\nmsg.payload.entities = [entity];\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 490,
+        "y": 340,
+        "wires": [
+            [
+                "d1d9cde9.c98c7"
+            ]
+        ]
+    },
+    {
+        "id": "d1d9cde9.c98c7",
+        "type": "http request",
+        "z": "e72d8183.2ed18",
+        "name": "Post to Marketplace",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "",
+        "tls": "",
+        "proxy": "",
+        "authType": "",
+        "x": 500,
+        "y": 400,
+        "wires": [
+            [
+                "f6bb7617.4b7028"
+            ]
+        ]
+    },
+    {
+        "id": "f6bb7617.4b7028",
+        "type": "debug",
+        "z": "e72d8183.2ed18",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 530,
+        "y": 460,
+        "wires": []
+    }
+]

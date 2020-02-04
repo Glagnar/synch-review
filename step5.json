@@ -1,0 +1,92 @@
+[
+    {
+        "id": "1a6d2574.ec504b",
+        "type": "inject",
+        "z": "e72d8183.2ed18",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "300",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 170,
+        "y": 600,
+        "wires": [
+            [
+                "846f35d1.0f3a58"
+            ]
+        ]
+    },
+    {
+        "id": "846f35d1.0f3a58",
+        "type": "function",
+        "z": "e72d8183.2ed18",
+        "name": "Setup Marketplace Credentials",
+        "func": "msg.headers ={};\nmsg.headers[\"x-auth-token\"] = \"be49bab8145e10c5696468e552f42e481bd7999b\";\nmsg.headers[\"Fiware-Service\"] = \"porto\";\n\nmsg.url = \"https://broker.iot-data-marketplace.com/v2/entities?type=TrafficFlowObserved\";\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 230,
+        "y": 660,
+        "wires": [
+            [
+                "eb49cace.d1c51"
+            ]
+        ]
+    },
+    {
+        "id": "a6024478.e7bd48",
+        "type": "debug",
+        "z": "e72d8183.2ed18",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 610,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "eb49cace.d1c51",
+        "type": "http request",
+        "z": "e72d8183.2ed18",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": false,
+        "url": "",
+        "tls": "",
+        "proxy": "",
+        "authType": "",
+        "x": 170,
+        "y": 720,
+        "wires": [
+            [
+                "78e429ff.3a9268"
+            ]
+        ]
+    },
+    {
+        "id": "78e429ff.3a9268",
+        "type": "split",
+        "z": "e72d8183.2ed18",
+        "name": "",
+        "splt": "\\n",
+        "spltType": "str",
+        "arraySplt": 1,
+        "arraySpltType": "len",
+        "stream": false,
+        "addname": "",
+        "x": 370,
+        "y": 720,
+        "wires": [
+            [
+                "a6024478.e7bd48",
+                "3ebe458a.35125a"
+            ]
+        ]
+    }
+]
